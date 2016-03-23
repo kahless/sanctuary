@@ -4123,24 +4123,34 @@ describe('parse', function() {
 
   describe('parseJson', function() {
 
-    it('is a unary function', function() {
+    it('is a binary function', function() {
       eq(typeof S.parseJson, 'function');
-      eq(S.parseJson.length, 1);
+      eq(S.parseJson.length, 2);
     });
 
     it('type checks its arguments', function() {
-      assert.throws(function() { S.parseJson([1, 2, 3]); },
+
+      assert.throws(function() { S.parseJson('String'); },
+                    errorEq(TypeError,
+                            '‘parseJson’ expected a value of type TypeRep ' +
+                            'as its first argument; received "String"'));
+
+      assert.throws(function() { S.parseJson(Array, [1, 2, 3]); },
                     errorEq(TypeError,
                             '‘parseJson’ expected a value of type String ' +
-                            'as its first argument; received [1, 2, 3]'));
+                            'as its second argument; received [1, 2, 3]'));
     });
 
     it('returns a Just when applied to a valid JSON string', function() {
-      eq(S.parseJson('["foo","bar"]'), S.Just(['foo', 'bar']));
+      eq(S.parseJson(Array, '["foo","bar"]'), S.Just(['foo', 'bar']));
     });
 
     it('returns a Nothing when applied to an invalid JSON string', function() {
-      eq(S.parseJson('[Invalid JSON]'), S.Nothing());
+      eq(S.parseJson(Object, '[Invalid JSON]'), S.Nothing());
+    });
+
+    it('returns a Nothing when the parsed result is not a member of the given Type', function() {
+      eq(S.parseJson(Array, '{"foo": "bar"}'), S.Nothing());
     });
 
   });
