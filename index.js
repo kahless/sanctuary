@@ -2764,7 +2764,7 @@
   def('parseJson',
       {},
       [TypeRep, $.String, $Maybe(a)],
-      function(type, json) { return filter(is(type), encase(JSON.parse, json)); });
+      function(type, s) { return filter(is(type), encase(JSON.parse, s)); });
 
   //. ### RegExp
 
